@@ -69,27 +69,20 @@ pbkdf2_hmac <- function(hash_name, password, salt, iterations, dklen=NULL){
         inner_update = c(
             inner_part, 
             salt_1)
-        outer_update = sha256(
-            c(outer_part, sha256(inner_update))
-        )
-        rkey = outer_update
+        outer_update = c(outer_part, sha256(inner_update))
+        outer_update_sha256 = sha256(outer_update)
+        rkey = outer_update_sha256
         
         
         if (iterations == 1){
             dkey = c(dkey, rkey)
         }else{
             for (i in 1:(iterations - 1)){
-                if (i == 1){
-                    inner_update = c(inner_part, rkey)
-                    outer_update = c(outer_part, sha256(inner_update))
-                    outer_update_sha256 = sha256(outer_update)
-                    rkey = xor(outer_update_sha256, rkey)
-                }else{
-                    inner_update = c(inner_part, outer_update_sha256)
-                    outer_update = c(outer_part, sha256(inner_update))
-                    outer_update_sha256 = sha256(outer_update)
-                    rkey= xor(outer_update_sha256, rkey)
-                }
+    
+                inner_update = c(inner_part, outer_update_sha256)
+                outer_update = c(outer_part, sha256(inner_update))
+                outer_update_sha256 = sha256(outer_update)
+                rkey= xor(outer_update_sha256, rkey)
                 
             }
         }
@@ -105,5 +98,5 @@ iv_password = charToRaw('apidata/api/gk/score/special')
 salt = charToRaw('secret')
 
 
-print(pbkdf2_hmac('sha256', iv_password, charToRaw('secret'), 1000, 16))
-print(pbkdf2_hmac('sha256', key_password, charToRaw('secret'), 1000))
+print(pbkdf2_hmac('sha256', iv_password, charToRaw('secret'), 3, 16))
+print(pbkdf2_hmac('sha256', key_password, charToRaw('secret'), 3))
