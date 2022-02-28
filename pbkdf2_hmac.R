@@ -2,7 +2,10 @@
 
 library(openssl)
 
-
+# Reference: 
+# wiki https://en.wikipedia.org/wiki/PBKDF2
+# python hashlib https://github.com/python/cpython/blob/3.10/Lib/hashlib.py
+# result can be check here https://asecuritysite.com/hash/pb2
 
 pbkdf2_hmac <- function(hash_name, password, salt, iterations, dklen=NULL){
     # copy from python hashlib.pbkdf2_hmac
